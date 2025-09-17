@@ -1,0 +1,19 @@
+{
+  "name": "crud-operations",
+  "version": "1.0.0",
+  "description": "application for crud operations",
+  "main": "index.js",
+ "scripts": {
+  "start": "nodemon src/server.js"
+},
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "mongoose": "^8.18.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
