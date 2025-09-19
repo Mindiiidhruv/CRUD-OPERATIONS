@@ -24,7 +24,7 @@ exports.getUsers = async (req, res) => {
     }
 
     const pageNumber = parseInt(page);
-    const pageLimit = parseInt(limit) || 10;
+    const pageLimit = parseInt(limit);
     const skip = (pageNumber - 1) * pageLimit;
 
     const users = await User.find(query)
@@ -38,14 +38,15 @@ exports.getUsers = async (req, res) => {
       return res.status(404).json({ error: "No users found" });
     }
 
-    res.json({
+    res.status(200).json({
+      message: "Total Users Present",
       page: pageNumber,
       limit: pageLimit,
       total,
       users,
     });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(400).json({ error: err.message });
   }
 };
 
@@ -53,9 +54,9 @@ exports.getUserById = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     if (!user) return res.status(404).json({ error: "User not found" });
-    res.json(user);
+    res.status(200).json({ message: "User found successfully", user });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(400).json({ error: err.message });
   }
 };
 
@@ -66,7 +67,7 @@ exports.updateUser = async (req, res) => {
       runValidators: true,
     });
     if (!user) return res.status(404).json({ error: "User not found" });
-    res.json(user);
+    res.status(200).json({ message: "User data updated successfully", user });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -76,9 +77,9 @@ exports.deleteUser = async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(req.params.id);
     if (!user) return res.status(404).json({ error: "User not found" });
-    res.json({ message: "User deleted successfully", user });
+    res.status(200).json({ message: "User deleted successfully", user });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(400).json({ error: err.message });
   }
 };
 
