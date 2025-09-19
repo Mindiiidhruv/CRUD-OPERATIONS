@@ -28,6 +28,7 @@ exports.getUsers = async (req, res) => {
     const skip = (pageNumber - 1) * pageLimit;
 
     const users = await User.find(query)
+      .collation({ locale: "en", strength: 2 })
       .sort({ name: 1 })
       .skip(skip)
       .limit(pageLimit);
