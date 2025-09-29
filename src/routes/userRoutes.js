@@ -7,15 +7,22 @@ const {
   deleteUser,
 } = require("../controllers/userController");
 
-const { loginUser, signUpUser } = require("../controllers/authController");
+const {
+  loginUser,
+  signUpUser,
+  logoutUser,
+} = require("../controllers/authController");
+
+const userAuth = require("../middleware/auth");
 
 const router = express.Router();
 
-router.post("/", createUser);
-router.get("/", getUsers);
+router.post("/", userAuth, createUser);
+router.get("/", userAuth, getUsers);
 router.get("/:id", getUserById);
 router.put("/:id", updateUser);
 router.delete("/:id", deleteUser);
 router.post("/Login", loginUser);
 router.post("/SignUp", signUpUser);
+router.post("/Logout", logoutUser);
 module.exports = router;
