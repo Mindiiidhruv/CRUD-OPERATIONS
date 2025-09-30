@@ -37,7 +37,7 @@ const authSchema = new mongoose.Schema(
       validate(value) {
         if (!validator.isStrongPassword(value)) {
           throw new Error(
-            "Password should contain uppercase, lowercase, no and special character"
+            "Password must be 8-128 characters long, and include at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character (example- !@#$%^&*)."
           );
         }
       },
