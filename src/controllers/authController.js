@@ -3,7 +3,6 @@ const bcrypt = require("bcrypt");
 const JWT = require("jsonwebtoken");
 const validateSignUpData = require("../utils/validate");
 
-/*
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -21,44 +20,13 @@ exports.loginUser = async (req, res) => {
       expiresIn: "8h",
     });
 
-    res.json({
-      message: "User Login Successfully",
-      user,
-      token,
-    });
-  } catch (err) {
-    res.status(400).send("Error: " + err.message);
-  }
-};
-*/
-
-exports.loginUser = async (req, res) => {
-  const { email, password } = req.body;
-  try {
-    const user = await Auth.findOne({ email: email });
-    if (!user) {
-      throw new Error("User not found");
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      throw new Error("Password not valid");
-    }
-
-    const token = JWT.sign({ _id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "8h",
-    });
+    const userData = user.toObject();
+    delete userData.password;
+    delete userData.__v;
 
     const response = {
-      user: {
-        id: user._id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        age: user.age,
-        city: user.city,
-        token: token,
-      },
+      ...userData,
+      token,
     };
 
     res.json({
@@ -69,41 +37,6 @@ exports.loginUser = async (req, res) => {
     res.status(400).send("Error: " + err.message);
   }
 };
-
-/*
-exports.signUpUser = async (req, res) => {
-  try {
-    validateSignUpData(req);
-
-    const { firstName, lastName, email, password, age, city } = req.body;
-
-    const hashPassword = await bcrypt.hash(password, 10);
-
-    const user = new Auth({
-      firstName,
-      lastName,
-      email,
-      password: hashPassword,
-      age,
-      city,
-    });
-
-    const savedUser = await user.save();
-
-    const token = await JWT.sign({ _id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "8h",
-    });
-
-    res.json({
-      message: "User added successfully",
-      data: savedUser,
-      token, // Include token here
-    });
-  } catch (err) {
-    res.status(400).send("Error: " + err.message);
-  }
-};
-*/
 
 exports.signUpUser = async (req, res) => {
   try {
@@ -128,16 +61,13 @@ exports.signUpUser = async (req, res) => {
       expiresIn: "8h",
     });
 
+    const userData = user.toObject();
+    delete userData.password;
+    delete userData.__v;
+
     const response = {
-      user: {
-        id: savedUser._id,
-        firstName: savedUser.firstName,
-        lastName: savedUser.lastName,
-        email: savedUser.email,
-        age: savedUser.age,
-        city: savedUser.city,
-        token: token,
-      },
+      ...userData,
+      token,
     };
 
     res.status(201).json({
@@ -172,7 +102,8 @@ exports.getAuthUsers = async (req, res) => {
       .collation({ locale: "en", strength: 2 })
       .sort({ firstName: 1 })
       .skip(skip)
-      .limit(pageLimit);
+      .limit(pageLimit)
+      .select("-password -__v");
 
     const total = await Auth.countDocuments(query);
 
