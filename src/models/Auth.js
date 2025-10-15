@@ -48,10 +48,6 @@ const authSchema = new mongoose.Schema(
       min: 18,
       default: 20,
     },
-
-    city: {
-      type: "String",
-    },
   },
   {
     timestamps: true,

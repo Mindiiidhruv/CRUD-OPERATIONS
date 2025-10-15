@@ -11,6 +11,8 @@ const {
   loginUser,
   signUpUser,
   getAuthUsers,
+  deleteAuthUser,
+  updateAddressAndGetUser,
 } = require("../controllers/authController");
 
 const userAuth = require("../middleware/auth");
@@ -23,6 +25,8 @@ router.get("/authUser", userAuth, getAuthUsers);
 router.post("/Login", loginUser);
 router.post("/SignUp", signUpUser);
 router.get("/:id", getUserById);
+router.delete("/auth/:userId", deleteAuthUser);
+router.put("/address/:userId", updateAddressAndGetUser);
 router.put("/:id", updateUser);
 router.delete("/:id", deleteUser);
 
